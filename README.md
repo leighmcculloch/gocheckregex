@@ -1,6 +1,6 @@
 # gocheckregex
 
-[![Build Status](https://img.shields.io/travis/leighmcculloch/gocheckregex.svg)](https://travis-ci.org/leighmcculloch/gocheckregex)
+[![Build Status](https://img.shields.io/travis/com/leighmcculloch/gocheckregex.svg)](https://travis-ci.com/leighmcculloch/gocheckregex)
 [![Codecov](https://img.shields.io/codecov/c/github/leighmcculloch/gocheckregex.svg)](https://codecov.io/gh/leighmcculloch/gocheckregex)
 [![Go Report Card](https://goreportcard.com/badge/github.com/leighmcculloch/gocheckregex)](https://goreportcard.com/report/github.com/leighmcculloch/gocheckregex)
 
