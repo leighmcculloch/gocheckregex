@@ -54,25 +54,32 @@ func checkRegex(rootPath string) ([]string, error) {
 			for _, spec := range genDecl.Specs {
 				valueSpec := spec.(*ast.ValueSpec)
 				for _, vn := range valueSpec.Values {
-					if c, ok := vn.(*ast.CallExpr); ok {
-						if f, ok := c.Fun.(*ast.SelectorExpr); ok {
-							if p, ok := f.X.(*ast.Ident); ok {
-								if p.Name == "regexp" && f.Sel.Name == "MustCompile" && len(c.Args) == 1 {
-									if b, ok := c.Args[0].(*ast.BasicLit); ok {
-										if b.Kind == token.STRING {
-											s, err := strconv.Unquote(b.Value)
-											if err == nil {
-												_, err := regexp.Compile(s)
-												if err != nil {
-													line := fset.Position(vn.Pos()).Line
-													message := fmt.Sprintf("%s:%d %v", filename, line, err)
-													messages = append(messages, message)
-												}
-											}
-										}
-									}
-								}
-							}
+					call, ok := vn.(*ast.CallExpr)
+					if !ok {
+						continue
+					}
+					function, ok := call.Fun.(*ast.SelectorExpr)
+					if !ok {
+						continue
+					}
+					pkg, ok := function.X.(*ast.Ident)
+					if !ok {
+						continue
+					}
+					if pkg.Name == "regexp" && function.Sel.Name == "MustCompile" && len(call.Args) == 1 {
+						literal, ok := call.Args[0].(*ast.BasicLit)
+						if !ok || literal.Kind != token.STRING {
+							continue
+						}
+						str, err := strconv.Unquote(literal.Value)
+						if err != nil {
+							continue
+						}
+						_, err = regexp.Compile(str)
+						if err != nil {
+							line := fset.Position(vn.Pos()).Line
+							message := fmt.Sprintf("%s:%d %v", filename, line, err)
+							messages = append(messages, message)
 						}
 					}
 				}
